@@ -41,6 +41,7 @@ nlp_ticket_intelligence/
 ├── notebooks/          # One notebook per week — exploration and analysis
 ├── data/
 │   └── cleaned/        # Preprocessed dataset (cleaned_review.csv)
+│   └── plots/          # Visualizations
 |   └── raw/            # Raw dataset (raw_reviews.csv)
 ├── src/                # Reusable functions imported by app and notebooks
 ├── app/                # Streamlit app (Week 8)
