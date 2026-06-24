@@ -1,4 +1,4 @@
-# NLP-Based Customer Support Intelligence System (In working currently)
+# NLP-Based Customer Support Intelligence System (In Progress)
 
 An end-to-end NLP pipeline that extracts complaint intelligence from Amazon reviews — assigning topic labels to incoming complaints and surfacing similar past resolved cases for faster agent resolution.
 
@@ -38,13 +38,13 @@ Support teams receive thousands of complaints daily. Manual triage is slow, inco
 ```
 nlp_ticket_intelligence/
 │
-├── notebooks/          # One notebook per week — exploration and analysis
+├── notebooks/          # One notebook per phase — exploration and analysis
 ├── data/
-│   └── cleaned/        # Preprocessed dataset (cleaned_review.csv)
-│   └── plots/          # Visualizations
-|   └── raw/            # Raw dataset (raw_reviews.csv)
+│   ├── cleaned/        # Preprocessed dataset (cleaned_review.csv, embeddings)
+│   ├── raw/            # Raw filtered dataset (raw_reviews.csv)
+├── plots/              # Visualizations (UMAP projection)
 ├── src/                # Reusable functions imported by app and notebooks
-├── app/                # Streamlit app (Week 8)
+├── app/                # Streamlit app (Phase 8)
 └── requirements.txt
 ```
 
@@ -52,14 +52,17 @@ nlp_ticket_intelligence/
 
 ## Progress
 
-- [x] **Phase 1** — Problem framing, data pipeline, preprocessing (Day 1)
+- [x] **Phase 1** — Problem framing, data pipeline, preprocessing (Day 1-2)
 - [x] **Phase 2** — TF-IDF baseline, cosine similarity search (Day 4)
-- [ ] **Phase 3** — Sentence embeddings, semantic search, UMAP
-- [ ] **Phase 4** — ChromaDB vector store, retrieval system
-- [ ] **Phase 5** — BERTopic topic modeling
-- [ ] **Phase 6** — Explainability (LIME/SHAP)
-- [ ] **Phase 7** — RAG pipeline
+- [x] **Phase 3** — Sentence embeddings, semantic search, UMAP visualization (Day 5-6)
+- [x] **Phase 4** — BERTopic topic modeling, topic naming, label assignment (Day 7)
+- [ ] **Phase 5** — ChromaDB vector store, retrieval system with metadata filtering
+- [ ] **Phase 6** — Explainability (LIME/SHAP), model card
+- [ ] **Phase 7** — RAG pipeline, Claude API integration, Confidence Gate
 - [ ] **Phase 8** — Streamlit deployment
+
+> Note: Topic modeling (Phase 4) precedes vector storage (Phase 5) so that topic labels
+> can be stored as metadata in ChromaDB for filtered retrieval.
 
 ---
 
@@ -76,15 +79,18 @@ nlp_ticket_intelligence/
 
 - **Proxy data:** Low-star Amazon reviews used instead of proprietary support tickets
 - **Dual preprocessing:** `text_clean` (stopwords removed) for TF-IDF; `text_clean_full` (stopwords kept) for sentence transformers
-- **Confidence gate:** Low-confidence predictions flagged for manual review instead of auto-routing (Week 7)
+- **Confidence gate:** Low-confidence predictions flagged for manual review instead of auto-routing (Phase 7)
 - **Streaming load:** 9.34GB JSONL file streamed line-by-line — no full download required
+- **Phase ordering:** Topic modeling before vector storage — topic labels stored as ChromaDB metadata for filtered retrieval
+
+---
 
 ## Key Findings So Far
 
-- TF-IDF + cosine similarity performs well on queries with distinctive vocabulary
-  (e.g. "incompatible", "uncomfortable") but fails on generic complaint terms
-  (e.g. "broken", "not working") due to lack of semantic understanding —
-  motivating the move to sentence embeddings in Phase 3.
-- HTML artifacts (entities, tags) survived initial preprocessing and were only
-  caught through vocabulary inspection post-vectorization — a reminder to always
-  audit your feature space, not just your raw text.
+- **TF-IDF vs Semantic Search (Phase 2-3):** TF-IDF performs well on rare, distinctive vocabulary ("incompatible", "uncomfortable") but fails on generic complaint terms ("broken", "not working") due to lack of semantic understanding. Semantic search won 9/10 queries on the same evaluation set. Hybrid retrieval identified as the production-grade solution.
+
+- **HTML artifacts (Phase 2):** HTML entities and tags survived initial preprocessing and were only caught through vocabulary inspection post-vectorization — a reminder to always audit your feature space, not just your raw text.
+
+- **UMAP visualization (Phase 3):** Complaint embeddings form natural clusters without labels. An isolated counterfeit/fraud cluster was discovered far from the main complaint blob — semantically distinct enough to warrant separate routing in production.
+
+- **Topic modeling (Phase 4):** BERTopic discovered 40 actionable complaint topics from 30,157 reviews using pre-computed embeddings (58 seconds). Largest topic: Charging Issues (2,746 reviews). 39% noise rate accepted — ambiguous short reviews excluded from routing but retained for semantic retrieval. 5 irrelevant clusters and 3 redundant topic pairs identified and documented.
