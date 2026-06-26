@@ -1,5 +1,6 @@
 personal_documentation.md
 problemstatement.md
+data/chromadb/
 planning.md
 .cache/
 __pycache__/
