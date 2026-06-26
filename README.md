@@ -40,6 +40,7 @@ nlp_ticket_intelligence/
 │
 ├── notebooks/          # One notebook per phase — exploration and analysis
 ├── data/
+│    ├── chromadb/
 │   ├── cleaned/        # Preprocessed dataset (cleaned_review.csv, embeddings)
 │   ├── raw/            # Raw filtered dataset (raw_reviews.csv)
 ├── plots/              # Visualizations (UMAP projection)
@@ -47,6 +48,8 @@ nlp_ticket_intelligence/
 ├── app/                # Streamlit app (Phase 8)
 └── requirements.txt
 ```
+> Note: ChromaDB index is not tracked in git. Run `day8_chromadb.ipynb` 
+> to regenerate it locally before running the app.
 
 ---
 
