@@ -59,7 +59,7 @@ nlp_ticket_intelligence/
 - [x] **Phase 2** — TF-IDF baseline, cosine similarity search (Day 4)
 - [x] **Phase 3** — Sentence embeddings, semantic search, UMAP visualization (Day 5-6)
 - [x] **Phase 4** — BERTopic topic modeling, topic naming, label assignment (Day 7)
-- [ ] **Phase 5** — ChromaDB vector store, retrieval system with metadata filtering
+- [x] **Phase 5** — ChromaDB vector store, retrieval system with metadata filtering
 - [ ] **Phase 6** — Explainability (LIME/SHAP), model card
 - [ ] **Phase 7** — RAG pipeline, Claude API integration, Confidence Gate
 - [ ] **Phase 8** — Streamlit deployment
