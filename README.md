@@ -40,12 +40,13 @@ nlp_ticket_intelligence/
 │
 ├── notebooks/          # One notebook per phase — exploration and analysis
 ├── data/
-│    ├── chromadb/
+│   ├── chromadb/
 │   ├── cleaned/        # Preprocessed dataset (cleaned_review.csv, embeddings)
 │   ├── raw/            # Raw filtered dataset (raw_reviews.csv)
-├── plots/              # Visualizations (UMAP projection)
+|   ├── plots/          # Visualizations (UMAP projection)
 ├── src/                # Reusable functions imported by app and notebooks
 ├── app/                # Streamlit app (Phase 8)
+├── Model_Card.md       # Model Card (Phase 6)
 └── requirements.txt
 ```
 > Note: ChromaDB index is not tracked in git. Run `day8_chromadb.ipynb` 
@@ -59,8 +60,8 @@ nlp_ticket_intelligence/
 - [x] **Phase 2** — TF-IDF baseline, cosine similarity search (Day 4)
 - [x] **Phase 3** — Sentence embeddings, semantic search, UMAP visualization (Day 5-6)
 - [x] **Phase 4** — BERTopic topic modeling, topic naming, label assignment (Day 7)
-- [x] **Phase 5** — ChromaDB vector store, retrieval system with metadata filtering
-- [ ] **Phase 6** — Explainability (LIME/SHAP), model card
+- [x] **Phase 5** — ChromaDB vector store, retrieval system with metadata filtering (Day 8-9)
+- [x] **Phase 6** — Explainability (LIME), model card, topic label audit (Day 10-12)
 - [ ] **Phase 7** — RAG pipeline, Claude API integration, Confidence Gate
 - [ ] **Phase 8** — Streamlit deployment
 
@@ -96,4 +97,6 @@ nlp_ticket_intelligence/
 
 - **UMAP visualization (Phase 3):** Complaint embeddings form natural clusters without labels. An isolated counterfeit/fraud cluster was discovered far from the main complaint blob — semantically distinct enough to warrant separate routing in production.
 
-- **Topic modeling (Phase 4):** BERTopic discovered 40 actionable complaint topics from 30,157 reviews using pre-computed embeddings (58 seconds). Largest topic: Charging Issues (2,746 reviews). 39% noise rate accepted — ambiguous short reviews excluded from routing but retained for semantic retrieval. 5 irrelevant clusters and 3 redundant topic pairs identified and documented.
+- **Topic modeling (Phase 4):** BERTopic discovered 40 actionable complaint topics from 30,157 reviews using pre-computed embeddings (58 seconds). Largest topic: Charging Issues (2,746 reviews). 39% noise rate accepted — ambiguous short reviews excluded from routing but retained for semantic retrieval. Several topics initially flagged as redundant pairs during manual review; later explainability work (Phase 6) showed two of these were not redundancy but outright mislabeling.
+
+- **Explainability surfaces data bugs, not just predictions (Phase 6):** Built a LIME wrapper over a centroid-based topic classifier and ran it on 10 sample complaints. The heatmap exposed an anomalous word-importance signal that led to discovering two separate topic mislabeling bugs from BERTopic's `reduce_topics()` step — one topic labeled "Stylus/Pen issues" actually contained camera lens/protector complaints, and an adjacent "Camera/Camera lens issues" topic actually contained generic wear/durability complaints (plus one cross-category data leak from a non-stick pan review). Both relabeled and re-propagated through the dataframe and ChromaDB. The practical lesson: explainability tooling is as valuable for catching upstream data quality issues as it is for justifying individual predictions — no exhaustive audit of the remaining 37 topics has been performed, so similar issues may still exist.
