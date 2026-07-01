@@ -2,8 +2,6 @@
 
 An end-to-end NLP pipeline that extracts complaint intelligence from Amazon reviews — assigning topic labels to incoming complaints and surfacing similar past resolved cases for faster agent resolution.
 
-Built as a resume-grade portfolio project simulating a real support ticket intelligence system.
-
 ---
 
 ## Problem Statement
