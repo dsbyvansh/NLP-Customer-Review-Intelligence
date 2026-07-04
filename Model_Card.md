@@ -82,13 +82,46 @@ connectivity, etc.) and complaint volume.
   — qualitatively confirmed strong topic separation in 9/10 cases
 
 ### RAG Pipeline
-- Manual evaluation on 20 complaints, stratified by Top-1 distance bucket:
-  - 8 boundary cases (distance 0.2–0.4, weighted toward threshold)
-  - 4 low-distance cases (distance < 0.2, clear RAG path)
-  - 4 high-distance cases (distance > 0.4, clear direct generation path)
-  - 4 edge cases (complaints under 20 words)
-- Evaluation questions: Does retrieval improve response quality? Is 0.4 the
-  correct threshold? Does the gate distinguish useful from noisy retrieval?
+Manual evaluation on 20 complaints, stratified by Top-1 distance bucket:
+- 8 boundary cases (distance 0.2–0.4, weighted toward threshold)
+- 4 low-distance cases (distance < 0.2, clear RAG path)
+- 4 high-distance cases (distance > 0.4, clear direct generation path)
+- 4 edge cases (short complaints under 20 words)
+
+Responses scored on a 1–3 scale (1=poor, 2=acceptable, 3=good).
+
+**Finding 1 — RAG improves response quality:**
+RAG path averaged 2.81/3 vs. direct generation at 2.25/3 across 20 evaluated
+complaints. Retrieval consistently produced more specific, actionable responses.
+
+**Finding 2 — Topic misclassification is frequent but LLM partially compensates:**
+Topic labels were misclassified in approximately 10 of 20 evaluated complaints.
+In RAG cases, retrieved similar complaints provided enough grounding for the LLM
+to respond correctly to the actual complaint text despite the wrong topic label.
+In direct generation cases, misclassification combined with no retrieved context
+produced the worst responses in the evaluation (e.g. row 14, score 1 — complaint
+about sewing quality misclassified as "Glass Screen related issues", opening line
+referenced wrong product).
+
+**Finding 3 — Threshold 0.4 is valid:**
+The confidence gate correctly separated high-confidence retrievals from weak ones.
+Direct generation failures were caused by short/thin complaint text (< 5 words),
+not by the threshold being too loose or too strict. The threshold itself held up
+across all boundary cases (distance 0.35–0.40), all of which produced quality
+responses.
+
+**Finding 4 — Hallucination pattern identified in RAG path:**
+In 2 of 16 RAG cases, the LLM hallucinated a prior customer relationship
+("Based on your previous interactions", "We've noticed a pattern in your reports").
+This appears triggered when retrieved similar complaints describe recurring issues —
+the LLM incorrectly infers a history with the current customer. Fix: explicitly
+instruct the LLM in the system prompt never to reference prior customer history.
+
+**Finding 5 — Short complaint failure mode:**
+Complaints under 5 words produced poor responses on both paths (avg score 2.0).
+Direct generation has no retrieved context to compensate for thin input. Proposed
+fix: add a length gate upstream — if complaint is under N words, prompt the user
+to describe their issue in more detail before routing to the pipeline.
 
 ## Known Issues / Limitations
 1. **Noise rate:** ~37% of the corpus falls outside the 39 defined topics
@@ -139,3 +172,8 @@ connectivity, etc.) and complaint volume.
 - "Camera/Camera lens issues" relabeled to "Generic wear/durability
   complaints" after auditing the topic adjacent to the first fix; also
   surfaced minor cross-category data contamination (see Known Issues)
+- RAG pipeline added (Phase 7): Groq API, confidence gate at distance 0.4,
+  topic-scoped retrieval via `retrieve_filtered()`
+- Phase 7 evaluation completed: 20-complaint manual eval surfaced hallucination
+  pattern, short-complaint failure mode, and frequent topic misclassification;
+  threshold 0.4 validated; findings documented in evaluation section above
