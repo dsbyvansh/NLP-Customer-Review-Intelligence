@@ -25,13 +25,17 @@ def generate_response(complaint,topic_label,client,context=None):
 
 def rag_pipeline(complaint,topic_label,collection,client,model):
     if len(complaint.split())< 5:
-        return None
+        return None,None,None
     
     docs,distances = retrieve_filtered(complaint,collection,model,topic_label,top_k=3)
 
     if distances == [] or distances[0]>0.4:
         response = generate_response(complaint,topic_label,client)
+        used_rag = False
+        return response,None,used_rag
     else:
         response = generate_response(complaint,topic_label,client,context=docs)
+        used_rag = True
+        return response,docs,used_rag
 
-    return response
+    
