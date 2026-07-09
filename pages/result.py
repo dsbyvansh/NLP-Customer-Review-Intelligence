@@ -4,17 +4,20 @@ import matplotlib.pyplot as plt
 from src.loader import load_chroma_collection,load_model,load_groq_client,load_data
 from src.classifier import build_centroid_matrix,predict_proba
 
+st.set_page_config(page_title="Customer Support Intelligence system",layout="wide") 
+
 if 'response' not in st.session_state:
     st.warning("Please Enter a complaint first")
     if st.button("Go Back"):
         st.switch_page("app.py")
     st.stop()
 
-model = load_model()
-collection = load_chroma_collection()
-client = load_groq_client()
-df,embeddings = load_data()
-topic_centroids,topic_ids_sorted,centroid_matrix,topic_labels_sorted = build_centroid_matrix(df,embeddings)
+with st.spinner("Loading models... this may take a moment on first run⏳"):
+    model = load_model()
+    collection = load_chroma_collection()
+    client = load_groq_client()
+    df,embeddings = load_data()
+    topic_centroids,topic_ids_sorted,centroid_matrix,topic_labels_sorted = build_centroid_matrix(df,embeddings)
 
 topic_label = st.session_state['topic_label']
 confidence = st.session_state['confidence']
@@ -64,11 +67,15 @@ with st.expander("Why this response?"):
     weights = [w[1] for w in word_weights]
     colors = ['green' if w>0 else 'red' for w in weights]
 
+    
     fig,ax = plt.subplots(  )
     ax.barh(words,weights,color=colors)
     ax.set_ylabel("Words")
     ax.set_xlabel("Weights")
     ax.set_title(f"LIME explanation - {topic_label}")
+    st.caption("""🟢 Green bars = words that pushed the prediction TOWARD this topic
+    🔴 Red bars = words that pushed the prediction AWAY from this topic
+    Longer bar = stronger influence on the topic classification.""")
     st.pyplot(fig)
 
 if st.button("Analyze another compaint"):

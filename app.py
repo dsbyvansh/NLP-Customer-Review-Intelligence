@@ -6,11 +6,31 @@ from src.pipeline import rag_pipeline
 import matplotlib.pyplot as plt
 from src.loader import load_chroma_collection,load_model,load_groq_client,load_data
 
-model = load_model()
-collection = load_chroma_collection()
-client = load_groq_client()
-df,embeddings = load_data()
-topic_centroids,topic_ids_sorted,centroid_matrix,topic_labels_sorted = build_centroid_matrix(df,embeddings)
+st.set_page_config(page_title="Customer Support Intelligence system",layout="wide",page_icon="❗")  
+
+with st.spinner("Loading models... this may take a moment on first run⏳"):
+    model = load_model()
+    collection = load_chroma_collection()
+    client = load_groq_client()
+    df,embeddings = load_data()
+    topic_centroids,topic_ids_sorted,centroid_matrix,topic_labels_sorted = build_centroid_matrix(df,embeddings)
+
+with st.sidebar:
+    st.markdown("### About this tool")
+    st.info("""
+    This system uses Natural Language Processing 
+    which is trained on 30K+ Amazon reviews for the  
+    category "Cell Phones and Accessories" for generating
+    customer facing responses
+    """)
+    
+    st.markdown("### How it works")
+    st.markdown("""
+    1. Enter a complaint query for the category "Cell Phones and accessories
+       (Example comlaints are provided)
+    2. Click **Analyze**
+    3. View generated response and similar past complaints            
+    """)
 
 st.title("Customer Support Intelligence system")
 
