@@ -31,6 +31,25 @@ with st.sidebar:
     2. Click **Analyze**
     3. View generated response and similar past complaints            
     """)
+    st.markdown("""## Pipeline
+
+        Complaint
+
+            ↓
+
+        Topic Classification
+
+            ↓
+
+        Response Generation
+
+            ↓
+
+        Similar Complaints
+
+            ↓
+
+        LIME Explainability""")
 
 st.title("Customer Support Intelligence system")
 
@@ -50,29 +69,30 @@ complaint = st.text_area("Enter Customer complaint",
                           key='complaint')
 
 if st.button("Analyze"):
-    if complaint and complaint.strip():
-        probs = predict_proba([complaint],model,centroid_matrix)
-        predicted_idx = probs[0].argmax()
-        topic_label = topic_labels_sorted[predicted_idx]
-        sorted_probs = np.sort(probs[0])[::-1]
-        margin = sorted_probs[0] - sorted_probs[1]
-        if margin>0.005:
-            confidence = "🟢 High"
-        elif margin>0.002:
-            confidence = "🟡 Medium"
-        else:
-            confidence = "🔴 Low"
+    with st.spinner("Analyzing..."):
+        if complaint and complaint.strip():
+            probs = predict_proba([complaint],model,centroid_matrix)
+            predicted_idx = probs[0].argmax()
+            topic_label = topic_labels_sorted[predicted_idx]
+            sorted_probs = np.sort(probs[0])[::-1]
+            margin = sorted_probs[0] - sorted_probs[1]
+            if margin>0.005:
+                confidence = "🟢 High"
+            elif margin>0.002:
+                confidence = "🟡 Medium"
+            else:
+                confidence = "🔴 Low"
 
-        response,docs,used_rag = rag_pipeline(complaint,topic_label,collection,client,model)
+            response,docs,used_rag = rag_pipeline(complaint,topic_label,collection,client,model)
 
-        if response is None:
-            st.warning("Review is too short ⚠️ Try Again!!")
-        else:
-            st.session_state['topic_label'] = topic_label
-            st.session_state['confidence'] = confidence
-            st.session_state['predicted_idx'] = predicted_idx
-            st.session_state['response'] = response
-            st.session_state['docs'] = docs
-            st.session_state['used_rag'] = used_rag
-            st.session_state['input_complaint'] = complaint
-            st.switch_page("pages/result.py")
+            if response is None:
+                st.warning("Review is too short ⚠️ Try Again!!")
+            else:
+                st.session_state['topic_label'] = topic_label
+                st.session_state['confidence'] = confidence
+                st.session_state['predicted_idx'] = predicted_idx
+                st.session_state['response'] = response
+                st.session_state['docs'] = docs
+                st.session_state['used_rag'] = used_rag
+                st.session_state['input_complaint'] = complaint
+                st.switch_page("pages/result.py")

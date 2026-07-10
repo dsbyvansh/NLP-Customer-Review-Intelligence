@@ -1,8 +1,10 @@
+from regex import T
 import streamlit as st
 from lime.lime_text import LimeTextExplainer
 import matplotlib.pyplot as plt
 from src.loader import load_chroma_collection,load_model,load_groq_client,load_data
 from src.classifier import build_centroid_matrix,predict_proba
+from st_copy import copy_button
 
 st.set_page_config(page_title="Customer Support Intelligence system",layout="wide") 
 
@@ -38,6 +40,12 @@ st.markdown(f"""
     """)
 st.markdown("### Agent Response")
 st.markdown(f"{response}")
+copy_button(
+    response,
+    tooltip="Copy Response",
+    copied_label="Copied to clipboard",
+    icon="st"
+)      
 if docs is not None:
     st.markdown("### Previous Three similar complaints")
     for i in range(len(docs)):
