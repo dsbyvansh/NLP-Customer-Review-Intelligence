@@ -26,7 +26,7 @@ with st.sidebar:
     
     st.markdown("### How it works")
     st.markdown("""
-    1. Enter a complaint query for the category "Cell Phones and accessories
+    1. Enter a complaint query for the category "Cell Phones and accessories"
        (Example comlaints are provided)
     2. Click **Analyze**
     3. View generated response and similar past complaints            

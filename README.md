@@ -1,6 +1,11 @@
-# NLP-Based Customer Support Intelligence System (In Progress)
+# NLP-Based Customer Support Intelligence System
 
 An end-to-end NLP pipeline that extracts complaint intelligence from Amazon reviews — assigning topic labels to incoming complaints, retrieving similar past cases, and generating suggested customer-facing responses via a RAG pipeline.
+
+---
+
+## Live Demo
+🚀 [Try the app here](https://nlp-customer-review-intelligence-arftozvxbssveh7jpkubfx.streamlit.app/)
 
 ---
 
@@ -50,6 +55,8 @@ nlp_ticket_intelligence/
 │   ├── retrieval.py
 │   └── pipeline.py
 ├── app.py              # Streamlit app entry point
+├── pages
+    └──result.py        # Result page for streamlit app
 ├── MODEL_CARD.md       # Model card (updated through Phase 7)
 └── requirements.txt
 ```
