@@ -28,7 +28,7 @@ Support teams receive thousands of complaints daily. Manual triage is slow, inco
 | Topic Modeling | BERTopic, HDBSCAN, UMAP |
 | Explainability | LIME |
 | RAG Pipeline | Groq API (llama-3.1-8b-instant), ChromaDB |
-| Deployment | Streamlit, HuggingFace Spaces |
+| Deployment | Streamlit Community Cloud |
 
 ---
 
@@ -65,7 +65,7 @@ nlp_ticket_intelligence/
 - [x] **Phase 5** — ChromaDB vector store, retrieval system with metadata filtering (Day 8-9)
 - [x] **Phase 6** — Explainability (LIME), model card, topic label audit (Day 10-12)
 - [x] **Phase 7** — RAG pipeline, Groq API, confidence gate, 20-complaint evaluation (Day 13-16)
-- [ ] **Phase 8** — Streamlit app, HuggingFace Spaces deployment (Day 17+)
+- [x] **Phase 8** — Streamlit app, HuggingFace Spaces deployment (Day 17+)
 
 > Note: Topic modeling (Phase 4) precedes vector storage (Phase 5) so that topic labels
 > can be stored as metadata in ChromaDB for filtered retrieval.

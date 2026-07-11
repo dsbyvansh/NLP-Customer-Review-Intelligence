@@ -1,6 +1,8 @@
 import re
 import emoji
 from nltk.corpus import stopwords
+import nltk
+nltk.download('stopwords',quiet=True)
 def text_preprocessing(text,remove_stopwords=False):
     text = text.lower()
     text = re.sub(r"http\S+|www\S+","",text)

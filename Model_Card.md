@@ -120,7 +120,7 @@ instruct the LLM in the system prompt never to reference prior customer history.
 **Finding 5 — Short complaint failure mode:**
 Complaints under 5 words produced poor responses on both paths (avg score 2.0).
 Direct generation has no retrieved context to compensate for thin input. Proposed
-fix: add a length gate upstream — if complaint is under N words, prompt the user
+fix: add a length gate upstream — if complaint is under 5 words, prompt the user
 to describe their issue in more detail before routing to the pipeline.
 
 ## Known Issues / Limitations

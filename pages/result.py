@@ -1,4 +1,3 @@
-from regex import T
 import streamlit as st
 from lime.lime_text import LimeTextExplainer
 import matplotlib.pyplot as plt
