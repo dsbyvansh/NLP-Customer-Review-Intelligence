@@ -8,7 +8,7 @@ from groq import Groq
 import pandas as pd
 import numpy as np
 import os
-from load_dotenv import load_dotenv 
+from dotenv import load_dotenv 
 
 if os.path.exists("apikey.env"):
     load_dotenv("apikey.env")
